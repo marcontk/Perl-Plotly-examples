@@ -91,6 +91,14 @@ Chart::Plotly::show_plot($plot);
 
 ---
 
+## 🖼️ Preview
+
+Example of Plotly output from Perl (interactive 3D plot):
+
+![screenshot](images/plotly_3d_example.png)
+
+---
+
 ## 📂 Files
 
 - `perl_plot_examples.ipynb`: Jupyter notebook with all examples
