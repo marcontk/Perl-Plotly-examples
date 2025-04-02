@@ -2,10 +2,12 @@
 
 This repository showcases interactive data visualization using Perl in Jupyter Notebooks through the iPerl kernel. It includes three examples that demonstrate how to generate web-based interactive plots with Plotly from Perl.
 
+The notebook `perl_plot_examples.ipynb` was edited in **Visual Studio Code (VSCode)** using the [iPerl Jupyter kernel plugin](https://github.com/EntropyOrg/p5-Devel-IPerl).
+
 ## 📦 Requirements
 
 - Perl 5.x
-- [iPerl](https://metacpan.org/pod/IPerl)
+- [iPerl](https://metacpan.org/pod/IPerl) ([GitHub repo](https://github.com/EntropyOrg/p5-Devel-IPerl))
 - JupyterLab or VSCode with Jupyter extension
 - CPAN modules:
   - `Chart::Plotly`
@@ -91,7 +93,7 @@ Chart::Plotly::show_plot($plot);
 
 ## 📂 Files
 
-- `varios_ejemplos.ipynb`: Jupyter notebook with all examples
+- `perl_plot_examples.ipynb`: Jupyter notebook with all examples
 
 ## 📄 License
 
