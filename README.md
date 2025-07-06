@@ -103,6 +103,26 @@ Example of Plotly output from Perl (interactive 3D plot):
 
 - `perl_plot_examples.ipynb`: Jupyter notebook with all examples
 
+## 💡 ¿Cómo ejecutar este notebook?
+
+Este notebook está hecho en Perl usando el kernel IPerl.  
+Puedes ejecutarlo localmente con los siguientes pasos:
+
+1. Instala Perl y `cpanm` (si aún no lo tienes):
+   ```bash
+   curl -L https://cpanmin.us | perl - App::cpanminus
+
+2. Instala los módulos necesarios
+   cpanm Devel::IPerl Chart::Plotly
+
+3. Abre el notebook en Visual Studio Code<br>
+	•	Instala la extensión Jupyter en VSCode.<br>
+	•	Asegúrate de tener el kernel IPerl instalado.<br>
+	•	Abre el archivo .ipynb y selecciona el kernel Perl.
+
+También puedes usar jupyter notebook desde terminal si prefieres Jupyter clásico.
+
+
 ## 📄 License
 
 MIT License
