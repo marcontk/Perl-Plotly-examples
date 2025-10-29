@@ -6,6 +6,20 @@ Minimal container to run **JupyterLab** with the **Perl (IPerl)** kernel.
 ```bash
 podman build -t perl-jupyter .   # or: docker build -t perl-jupyter -f Containerfile .
 ```
+## run.sh
+This project includes a helper script [`run.sh`](./run.sh)  
+which builds (if needed) and launches JupyterLab automatically.
+
+```bash
+# Default: build and open on port 8888
+./run.sh
+
+# Optional environment variables:
+export DO_BUILD=0        # skip rebuild if image already exists
+export PORT_LOCAL=8890   # change host port
+export ENGINE=podman     # force Podman instead of Docker
+./run.sh
+
 
 ## Run
 ```bash
@@ -14,19 +28,3 @@ podman run --rm -p 8888:8888 -v "$PWD:/work" perl-jupyter
 # New Notebook -> Perl
 ```
 
-## Optional extras
-To have `Chart::Plotly`, `PDL`, or `Imager` available in the container,
-uncomment the line in the Containerfile:
-```Dockerfile
-# RUN cpanm Chart::Plotly PDL Imager
-```
-
-## Local install (no container)
-Ubuntu/Debian:
-```bash
-sudo apt update
-sudo apt install -y perl build-essential cpanminus libzmq3-dev python3-pip
-pip3 install jupyterlab
-cpanm --notest Devel::IPerl
-iperl lab   # or: iperl notebook
-```
