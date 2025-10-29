@@ -1,0 +1,65 @@
+# JupyterLab 3.x + IPerl + Chart::Plotly 0.042 + Kaleido + PDL + Imager
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ---------- SO base y Python ----------
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-venv \
+    perl cpanminus build-essential pkg-config git \
+    libzmq3-dev libsodium-dev libffi-dev libmagic-dev \
+    libssl-dev zlib1g-dev ca-certificates openssl \
+    unzip xz-utils curl tini \
+ && rm -rf /var/lib/apt/lists/*
+
+# ---------- Python: JupyterLab 3.x + notebook clásico ----------
+RUN python3 -m pip install --no-cache-dir --upgrade pip \
+ && python3 -m pip install --no-cache-dir "jupyterlab==3.6.7" "notebook==6.5.7"
+
+# IMPORTANTÍSIMO: renderer Plotly para JupyterLab
+RUN python3 -m pip install --no-cache-dir "plotly==5.24.1"
+
+# ---------- cpanm más confiable ----------
+ENV PERL_CPANM_OPT="--notest --mirror https://cpan.metacpan.org --mirror-only"
+ENV NO_NETWORK_TESTING=1
+
+# FFI + check de libzmq
+RUN cpanm FFI::CheckLib FFI::Platypus \
+ && perl -MFFI::CheckLib -e 'FFI::CheckLib::assert_lib(lib=>"zmq")'
+
+# ZMQ + IPerl (kernel)
+RUN cpanm ZMQ::FFI \
+ && cpanm Devel::IPerl
+
+# Kaleido + Plotly 0.042 + libs útiles para demos
+RUN cpanm Alien::Build Alien::Build::MM Path::Tiny File::chdir IPC::Run JSON \
+ && cpanm Net::SSLeay IO::Socket::SSL || true \
+ && cpanm Alien::Plotly::Kaleido Chart::Kaleido::Plotly \
+ && cpanm Chart::Plotly@0.042 \
+ && cpanm PDL Imager
+
+# ---------- Registrar kernel IPerl ----------
+RUN mkdir -p /tmp/iperl-kernelspec && cat > /tmp/iperl-kernelspec/kernel.json <<'JSON'
+{
+  "argv": ["iperl", "kernel", "{connection_file}"],
+  "display_name": "Perl (IPerl)",
+  "language": "perl"
+}
+JSON
+RUN jupyter kernelspec install --sys-prefix /tmp/iperl-kernelspec \
+ && rm -rf /tmp/iperl-kernelspec
+
+
+
+# ---------- Usuario no-root tipo "jovyan" ----------
+RUN useradd -m -u 1000 jovyan \
+ && mkdir -p /home/jovyan/.local/share/jupyter/runtime \
+ && chown -R jovyan:jovyan /home/jovyan
+
+USER jovyan
+WORKDIR /home/jovyan/work
+EXPOSE 8888
+
+# ---------- Arranque (JupyterLab 3, sin token) ----------
+ENTRYPOINT ["/usr/bin/tini","--"]
+CMD ["sh","-lc","jupyter lab --no-browser --ip=0.0.0.0 --ServerApp.token='' --ServerApp.password=''"]
