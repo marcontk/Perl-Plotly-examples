@@ -8,23 +8,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
+    timeout-minutes: 120
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 1. Instalar Docker Buildx (a veces ya viene, pero así nos aseguramos)
+      - name: List files (debug)
+        run: |
+          pwd
+          ls -la
+          ls -la perl-jupyter-podman || true
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 2. Build de la imagen usando tu Containerfile
       - name: Build image (no push)
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Containerfile
-          push: false
-          tags: perl-jupyter:latest
+            context: .
+            file: perl-jupyter-podman/Containerfile   # 👈 ruta explícita
+            push: false
+            tags: perl-jupyter:latest
